@@ -59,3 +59,6 @@ deb/
 
 # ===== Hermes 附件缓存 =====
 .hermes/
+
+# 测试签名证书（自签名，仅 testsigning 调试用；正式发布请自行生成）
+!_Windows11.pfx

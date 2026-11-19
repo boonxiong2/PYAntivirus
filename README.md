@@ -59,6 +59,17 @@ call "D:\VS26\Common7\Tools\VsDevCmd.bat" -arch=x64 -host_arch=x64
 cmake --build out\build\x64-Debug
 ```
 
+### 驱动测试签名
+
+仓库内附自签名测试证书 `_Windows11.pfx`（CN=_Windows11 Software，密码 `_Windows11`）——**仅供 testsigning 模式调试**，任何人可自签名，不具备任何身份保证。正式发布请自行生成新证书：
+
+```bat
+set PFX_PASSWORD=_Windows11
+make.bat
+```
+
+> 未设置 `PFX_PASSWORD` 时构建会跳过签名（打印 `[SKIP]`），驱动保持未签名。
+
 ## 病毒库
 
 仓库**不包含**病毒库（36MB，超过合理的 git 体积）。两种获取方式：
