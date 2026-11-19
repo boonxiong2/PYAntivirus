@@ -33,14 +33,17 @@ if %ERRORLEVEL% neq 0 (
 )
 echo [OK] pyav_kernel.sys built
 
-REM Sign driver with PFX
+REM Sign driver with PFX (密码从环境变量 PFX_PASSWORD 读取，仓库里不存明文密码)
 set PFX=%ROOT%_Windows11.pfx
-if exist "%PFX%" (
-    echo [*] Signing pyav_kernel.sys...
-    signtool sign /fd SHA256 /a /p _Windows11 /f "%PFX%" "%BUILD%\pyav_kernel.sys" >nul 2>&1
-    if %ERRORLEVEL% equ 0 ( echo [OK] Driver signed ) else ( echo [WARN] Signing failed — skip )
+if not defined PFX_PASSWORD (
+    echo [SKIP] PFX_PASSWORD not set - driver will stay unsigned
 ) else (
-    echo [SKIP] %PFX% not found, driver unsigned
+    if exist "%PFX%" (
+        echo [*] Signing pyav_kernel.sys...
+        signtool sign /fd SHA256 /a /p %PFX_PASSWORD% /f "%PFX%" "%BUILD%\pyav_kernel.sys" >nul 2>&1 && (echo [OK] Driver signed) || (echo [WARN] Signing failed - skip)
+    ) else (
+        echo [SKIP] %PFX% not found, driver unsigned
+    )
 )
 
 REM ── 2. Package pyav_client.exe (PyInstaller) ──────────────────────
