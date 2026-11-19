@@ -1,0 +1,50 @@
+[
+  {
+    "name": "银狐木马(SilverFox)",
+    "score": 60,
+    "condition": "any2",
+    "strings": ["ZhuDongFangYu", "scanning now", "MiniDump", "DuiLib", "svchost.exe -k", "/admin$"]
+  },
+  {
+    "name": "WannaCry勒索软件",
+    "score": 80,
+    "condition": "any1",
+    "strings": ["WannaCrypt", "wcry", "WNcry@2ol7", "encrypted files", "!WannaCry!", "Microsoft Security Center (2.0) Service"]
+  },
+  {
+    "name": "熊猫烧香变种",
+    "score": 70,
+    "condition": "any1",
+    "strings": ["whBoy", "熊猫烧香", "FuckJacks", "武汉男孩", "GameSetup"]
+  },
+  {
+    "name": "挖矿木马",
+    "score": 50,
+    "condition": "any1",
+    "strings": ["stratum+tcp://", "xmr-stak", "config.json", "\"pools\"", "coin-hive", "cryptonight", "max-cpu", "donate-level"]
+  },
+  {
+    "name": "Gh0st远控木马",
+    "score": 65,
+    "condition": "any1",
+    "strings": ["Gh0st", "ScreenSpy", "KeyboardSpy", "FileManager", "SystemManager", "ShellManager"]
+  },
+  {
+    "name": "CobaltStrike Beacon",
+    "score": 75,
+    "condition": "any1",
+    "strings": ["beacon.x64.dll", "beacon.x86.dll", "ReflectiveLoader", "stager.bin", "MSSE-%d", "%c%c%c%c%c%c%c%c%cMSSE-%d-server"]
+  },
+  {
+    "name": "可疑进程注入器",
+    "score": 45,
+    "condition": "any3",
+    "strings": ["CreateRemoteThread", "VirtualAllocEx", "WriteProcessMemory", "OpenProcess", "PROCESS_ALL_ACCESS"]
+  },
+  {
+    "name": "下载者木马(Dropper)",
+    "score": 45,
+    "condition": "any2",
+    "strings": ["URLDownloadToFile", "WinHttpOpen", "InternetOpenA", "HttpSendRequest"]
+  }
+]

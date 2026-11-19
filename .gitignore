@@ -1,0 +1,61 @@
+# ===== 构建产物（可再生成，别进仓库）=====
+dist/
+build/
+out/
+*.spec
+*.exe
+*.sys
+*.pdb
+*.obj
+*.ilk
+*.res
+CMakeCache.txt
+CMakeFiles/
+
+# ===== Python 环境 =====
+__pycache__/
+*.pyc
+.venv/
+.venv314/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# ===== IDE =====
+.idea/
+.vs/
+
+# ===== 病毒库（体积过大：json 122MB 超 GitHub 100MB 限制；txt 36MB）
+# 重新生成: python tools/update_virus_db.py
+resources/virus_hash_lib.json
+resources/virus_hash_lib.txt
+resources/virus_hash_lib.txt.bak
+resources/virus_hash_lib2.json
+
+# ===== 证书与私钥（绝对不能进仓库）=====
+*.pfx
+*.pvk
+*.cer
+*.key
+_*_key*.txt
+.mb_api_key
+
+# ===== 运行时产物 / 日志 / 临时 =====
+*.log
+*.crash
+dir_.venv.txt
+scan_reports/
+quarantine/
+antivirus_settings.json
+install_config.ini
+hermes-tmp*
+.hermes-tmp*
+
+# ===== 打包产物（deb / zip）=====
+deb/
+*.zip
+*.deb
+*.tar.gz
+
+# ===== Hermes 附件缓存 =====
+.hermes/

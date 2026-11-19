@@ -1,0 +1,32 @@
+PYAV — 双机内核调试设置
+===========================
+真机 (Host / WinDbg) ←→ 命名管道 ←→ VM (Windows / 被测驱动)
+
+VM 端（管理员 PowerShell）:
+  1. bcdedit /debug on
+  2. bcdedit /dbgsettings serial debugport:1 baudrate:115200
+  3. shutdown /r /t 0
+
+VMware VM 设置:
+  添加串行端口 → 输出到命名管道 \\.\pipe\com_1
+  ✓ 此端是服务器
+  ✓ 另一端是应用程序
+
+真机端（WinDbg）:
+  1. 安装 Windows SDK → 勾选 "Debugging Tools for Windows"
+  2. 运行：
+     WinDbg -k com:pipe,port=\\.\pipe\com_1,resets=0
+  3. 连接成功后，VM 内加载驱动，真机 WinDbg 显示 DbgPrint 输出
+
+强制断点 (在驱动代码加入):
+  DbgBreakPoint();  // 触发 WinDbg 中断
+  DbgPrint("[PYAV] xxx\n");  // 普通日志
+
+WinDbg 常用命令:
+  g         继续运行
+  .reload   重新加载符号
+  !process 0 0 列出进程
+  .sympath+ C:\path\to\pdb
+  bp DriverEntry 打断点
+  bl 列出断点
+  bc * 清除所有断点
