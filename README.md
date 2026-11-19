@@ -61,7 +61,15 @@ cmake --build out\build\x64-Debug
 
 ## 病毒库
 
-仓库**不包含**病毒库（体积过大）。首次使用前生成：
+仓库**不包含**病毒库（36MB，超过合理的 git 体积）。两种获取方式：
+
+**方式 1（推荐）：从 Release 下载**
+
+> **[⬇ virus_hash_lib.txt.zip](https://github.com/boonxiong2/PYAntivirus/releases/download/v1.0.0/virus_hash_lib.txt.zip)** —— 1,103,856 条 MD5
+
+解压出 `virus_hash_lib.txt`，放进 `resources/` 目录即可。
+
+**方式 2：自己拉最新**
 
 ```powershell
 # API key: https://mb-api.abuse.ch 免费，存到 ~/.mb_api_key
