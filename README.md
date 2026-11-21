@@ -76,7 +76,7 @@ make.bat
 
 **方式 1（推荐）：从 Release 下载**
 
-> **[⬇ virus_hash_lib.txt.zip](https://github.com/boonxiong2/PYAntivirus/releases/download/v1.0.0/virus_hash_lib.txt.zip)** —— 1,103,856 条 MD5
+> **[⬇ virus_hash_lib.txt.zip](https://github.com/boonxiong2/PYAntivirus/releases/download/virusdb-2026.11/virus_hash_lib.txt.zip)** —— 1,103,856 条 MD5（数据包发布，见 Release `virusdb-2026.11`）
 
 解压出 `virus_hash_lib.txt`，放进 `resources/` 目录即可。
 
