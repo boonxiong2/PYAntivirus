@@ -122,6 +122,27 @@ def load_existing():
         return set()
 
 
+def local_self_hashes():
+    """本地构建产物的 md5 —— 永不写进库（防自检自杀）"""
+    import glob
+    import hashlib
+    hs = set()
+    base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    patterns = [
+        "dist/PYAntivirus.exe",
+        "dist/*.exe",
+        "dist/packages/*.exe",
+        "dist/**/PYAntivirus.exe",
+    ]
+    for pat in patterns:
+        for p in glob.glob(os.path.join(base, pat), recursive=True):
+            try:
+                hs.add(hashlib.md5(open(p, "rb").read()).hexdigest())
+            except Exception:
+                pass
+    return hs
+
+
 def main():
     key = api_key()
     if not key:
@@ -171,7 +192,11 @@ def main():
         print("[!] 所有源都失败——保留旧库（last-known-good）")
         sys.exit(2)
 
-    added = new_hashes - existing
+    self_hashes = local_self_hashes()          # 自身构建产物永不进库
+    added = (new_hashes - existing) - self_hashes
+    skipped_self = (new_hashes - existing) & self_hashes
+    if skipped_self:
+        print(f"[!] 跳过 {len(skipped_self)} 个自身构建产物的 hash（防自检自杀）")
     if not added:
         print("[✓] 没有新哈希，库已是最新")
         return

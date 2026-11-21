@@ -995,6 +995,28 @@ class AVEngine:
             "heuristic_enabled": True
         }
 
+        # ===== 自身排除：防"自检自杀"（自身 hash 可能在 MalwareBazaar 里）=====
+        self.self_paths = set()
+        self.self_hashes = set()
+        self.self_dir = None
+        try:
+            targets = [sys.executable]
+            if not hasattr(sys, '_MEIPASS'):
+                targets.append(os.path.abspath(__file__))
+            for p in targets:
+                if p and os.path.exists(p):
+                    ap = os.path.normcase(os.path.abspath(p))
+                    self.self_paths.add(ap)
+                    try:
+                        with open(ap, 'rb') as f:
+                            self.self_hashes.add(hashlib.md5(f.read()).hexdigest())
+                    except Exception:
+                        pass
+            if hasattr(sys, '_MEIPASS'):
+                self.self_dir = os.path.normcase(os.path.dirname(os.path.abspath(sys.executable)))
+        except Exception:
+            pass
+
     def load_settings(self, settings_file="antivirus_settings.json"):
         if os.path.exists(settings_file):
             try:
@@ -1026,6 +1048,7 @@ class AVEngine:
                         self.virus_db.add(h)
             # 兜底：txt 疑似损坏（海量行但有效哈希极少）→ 回退 JSON
             if len(self.virus_db) >= 1000 or raw_count <= 10000:
+                self.virus_db -= self.self_hashes  # 永不把自己的 hash 当病毒
                 return True, f"成功加载 {len(self.virus_db)} 个MD5哈希特征(极速模式)"
             print(f"[!] 病毒库txt疑似损坏({raw_count}行仅{len(self.virus_db)}个有效哈希)，回退JSON")
             self.virus_db = set()
@@ -1040,6 +1063,7 @@ class AVEngine:
                     hv = hi['hash'].lower()
                     if hi.get('algorithm', 'md5').lower() == 'md5':
                         self.virus_db.add(hv)
+            self.virus_db -= self.self_hashes  # 永不把自己的 hash 当病毒
             return True, f"成功加载 {len(self.virus_db)} 个MD5哈希特征"
         return False, f"哈希库未找到: {db_file}"
 
@@ -1052,6 +1076,13 @@ class AVEngine:
         except: return None
 
     def scan_file(self, filepath, algorithm="md5"):
+        # 自身排除：不扫自己的程序本体和安装目录（防自检自杀）
+        try:
+            norm = os.path.normcase(os.path.abspath(filepath))
+            if norm in self.self_paths or (self.self_dir and norm.startswith(self.self_dir)):
+                return None, None, 0, [], None
+        except Exception:
+            pass
         fh = self.calculate_hash(filepath, algorithm)
         if fh and fh in self.virus_db: return "hash", fh, 100, ["已知病毒哈希匹配"], None
         if self.heuristic_scanner and os.path.splitext(filepath)[1].lower() in HEURISTIC_EXTS:
